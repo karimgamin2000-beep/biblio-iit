@@ -1,5 +1,6 @@
-"""Interface console interactive pour BiblioIIT."""
+"""Point d'entrée console de BiblioIIT (TUI Textual par défaut, ou --cli)."""
 
+import sys
 from pathlib import Path
 
 from depot_sqlite import DepotSQLite
@@ -57,7 +58,7 @@ def action_retards(service: BiblioService) -> None:
         )
 
 
-def main() -> None:
+def main_cli() -> None:
     chemin_db = Path(__file__).resolve().parent / "biblio.db"
     depot = DepotSQLite(chemin_db)
     depot.peupler_catalogue_initial()
@@ -82,6 +83,15 @@ def main() -> None:
                 print("Choix invalide. Veuillez saisir 0, 1, 2, 3 ou 4.")
     finally:
         depot.fermer()
+
+
+def main() -> None:
+    if "--cli" in sys.argv:
+        main_cli()
+    else:
+        from tui import lancer_tui
+
+        lancer_tui()
 
 
 if __name__ == "__main__":
